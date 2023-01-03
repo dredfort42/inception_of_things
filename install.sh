@@ -87,7 +87,9 @@ install_minikube() {
         echo -en "\033[32m[ OK ]\033[0m Minikube ready\n"
     fi
 
-    minikube start 2>$LOGFILE 1>$LOGFILE
+    if [ $(kubectl get nodes | wc -l) == 1 ]; then
+        minikube start 1>$LOGFILE 2>$LOGFILE
+    fi
 }
 
 get_kubernetes_version() {
@@ -96,6 +98,13 @@ get_kubernetes_version() {
     echo
     kubectl version --short
     minikube version
+}
+
+get_kubernetes_nodes() {
+    echo
+    echo -en "\033[43m*** Kubernetes nodes ************\033[0m\n"
+    echo
+    kubectl get nodes 2>$LOGFILE
 }
 
 clean_brew() {
@@ -129,6 +138,7 @@ clean_brew
 get_virtualbox_version
 get_docker_version
 get_kubernetes_version
+get_kubernetes_nodes
 
 environment_ready_message
 # Stop spinner
