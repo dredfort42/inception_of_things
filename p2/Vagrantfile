@@ -1,0 +1,30 @@
+MASTER_NODE = "dredfortS"
+MASTER_IP = "192.168.56.110"
+
+MEMORY = 2048
+CPU = 2
+GUI = false
+
+Vagrant.configure("2") do |config|
+	config.vm.box = "hashicorp/bionic64"
+  config.vm.box_check_update = false
+
+  # MASTER NODE
+  config.vm.define MASTER_NODE do |node|
+    node.vm.provider "virtualbox" do |vb|
+      vb.name = MASTER_NODE
+      vb.memory = MEMORY
+      vb.cpus = CPU
+      vb.gui = GUI
+    end
+    node.vm.hostname = MASTER_NODE
+    node.vm.network :private_network, ip: MASTER_IP
+    node.vm.provision "shell", privileged: true, inline: <<-SHELL
+      export INSTALL_K3S_EXEC="server --write-kubeconfig-mode=644 --flannel-iface=eth1";
+      curl -sfL https://get.k3s.io |  sh -;
+      kubectl apply -f /vagrant/confs/          
+    SHELL
+  end
+  # ---
+
+end

@@ -23,7 +23,7 @@ spinner() {
 
 prepare_brew() {
     # Fetch the newest version of Homebrew and all formulas
-    if [ $(brew update 2>$LOGFILE | wc -l) == 1 ]; then
+    if [ $(brew update >>$LOGFILE 2>&1 | wc -l) == 1 ]; then
         echo -en "\b\033[32m[ OK ]\033[0m Brew already up-to-date\n"
     else
         echo -en "\b\033[43m[ OK ]\033[0m Brew update complete\n"
@@ -38,31 +38,31 @@ prepare_brew() {
     fi
 
     # Upgrade outdated casks and outdated, unpinned formulas
-    brew upgrade 2>$LOGFILE 1>$LOGFILE && \
+    brew upgrade >>$LOGFILE 2>&1 && \
     echo -en "\033[32m[ OK ]\033[0m Brew formulas upgraded\n"
 }
 
-install_virtualbox() {
-    # Install virtualbox
-    if [ $(vboxmanage --version 2>$LOGFILE | wc -l) == 0 ]; then
-        brew install --cask virtualbox 2>$LOGFILE 1>$LOGFILE
-        echo -en "\033[43m[ OK ]\033[0m VirtualBox was installed\n"
-    else
-        echo -en "\033[32m[ OK ]\033[0m VirtualBox ready\n"
-    fi
-}
+# install_virtualbox() {
+#     # Install virtualbox
+#     if [ $(vboxmanage --version 2>>$LOGFILE | wc -l) == 0 ]; then
+#         brew install --cask virtualbox >>$LOGFILE 2>&1
+#         echo -en "\033[43m[ OK ]\033[0m VirtualBox was installed\n"
+#     else
+#         echo -en "\033[32m[ OK ]\033[0m VirtualBox ready\n"
+#     fi
+# }
 
-get_virtualbox_version() {
-    echo
-    echo -en "\033[43m*** VirtualBox version **********\033[0m\n"
-    echo
-    vboxmanage --version
-}
+# get_virtualbox_version() {
+#     echo
+#     echo -en "\033[43m*** VirtualBox version **********\033[0m\n"
+#     echo
+#     vboxmanage --version
+# }
 
 install_docker() {
     # Install docker
-    if [ $(docker version 2>$LOGFILE | wc -l) == 0 ]; then
-        brew install --cask docker 2>$LOGFILE 1>$LOGFILE
+    if [ $(docker version 2>>$LOGFILE | wc -l) == 0 ]; then
+        brew install --cask docker >>$LOGFILE 2>&1
         open /Applications/Docker.app
         sleep 10
         echo -en "\033[43m[ OK ]\033[0m Docker was installed\n"
@@ -80,15 +80,16 @@ get_docker_version() {
 
 install_minikube() {
     # Install minikube
-    if [ $(minikube version --short 2>$LOGFILE | wc -l) == 0 ]; then
-        brew install minikube 2>$LOGFILE 1>$LOGFILE
+    if [ $(minikube version --short 2>>$LOGFILE | wc -l) == 0 ]; then
+        brew install minikube >>$LOGFILE 2>&1
         echo -en "\033[43m[ OK ]\033[0m Minikube was installed\n"
     else
         echo -en "\033[32m[ OK ]\033[0m Minikube ready\n"
     fi
 
     if [ $(kubectl get nodes | wc -l) == 1 ]; then
-        minikube start 1>$LOGFILE 2>$LOGFILE
+        minikube start >>$LOGFILE 2>&1
+        echo "[[ $commands[kubectl] ]] && source <(kubectl completion zsh)" >> ~/.zshrc # add autocomplete permanently to your zsh shell
     fi
 }
 
@@ -104,7 +105,7 @@ get_kubernetes_nodes() {
     echo
     echo -en "\033[43m*** Kubernetes nodes ************\033[0m\n"
     echo
-    kubectl get nodes 2>$LOGFILE
+    kubectl get nodes 2>>$LOGFILE
 }
 
 clean_brew() {
@@ -129,13 +130,13 @@ environment_ready_message() {
 spinner &
 prepare_brew
 
-install_virtualbox
+# install_virtualbox
 install_docker
 install_minikube
 
 clean_brew
 
-get_virtualbox_version
+# get_virtualbox_version
 get_docker_version
 get_kubernetes_version
 get_kubernetes_nodes

@@ -1,0 +1,99 @@
+# APP1 DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app1
+  labels:
+    app: app1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app1
+  template:
+    metadata:
+      labels:
+        app: app1
+    spec:
+      containers:
+      - name: iot-app1
+        image: dredfort/iot
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /html
+          name: data-volume
+      volumes:
+      - name: data-volume
+        hostPath:
+          path: /vagrant/confs/html/app1
+          type: Directory
+
+---
+# APP2 DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app2
+  labels:
+    app: app2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app2
+  template:
+    metadata:
+      labels:
+        app: app2
+    spec:
+      containers:
+      - name: iot-app2
+        image: dredfort/iot
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /html
+          name: data-volume
+      volumes:
+      - name: data-volume
+        hostPath:
+          path: /vagrant/confs/html/app2
+          type: Directory
+
+---
+# APP3 DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app3
+  labels:
+    app: app3
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: app3
+  template:
+    metadata:
+      labels:
+        app: app3
+    spec:
+      containers:
+      - name: iot-app3
+        image: dredfort/iot
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /html
+          name: data-volume
+      volumes:
+      - name: data-volume
+        hostPath:
+          path: /vagrant/confs/html/app3
+          type: Directory

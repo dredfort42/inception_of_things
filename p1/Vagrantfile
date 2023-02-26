@@ -1,0 +1,58 @@
+MASTER_NODE = "dredfortS"
+MASTER_IP = "192.168.56.110"
+
+WORKER_NODE = "dredfortSW"
+WORKER_IP = "192.168.56.111"
+
+MEMORY = 1024
+CPU = 1
+GUI = false
+
+Vagrant.configure("2") do |config|
+	config.vm.box = "hashicorp/bionic64"
+  config.vm.box_check_update = false
+
+  # MASTER NODE
+  config.vm.define MASTER_NODE do |node|
+    node.vm.provider "virtualbox" do |vb|
+      vb.name = MASTER_NODE
+      vb.memory = MEMORY
+      vb.cpus = CPU
+      vb.gui = GUI
+    end
+    node.vm.hostname = MASTER_NODE
+    node.vm.network :private_network, ip: MASTER_IP
+    node.vm.provision "shell", privileged: true, inline: <<-SHELL
+      export INSTALL_K3S_EXEC="server --write-kubeconfig-mode=644 --bind-address=192.168.56.110  --advertise-address=192.168.56.110";
+      curl -sfL https://get.k3s.io |  sh -;
+      if [[ ! -d "/vagrant/confs" ]]; then
+          mkdir /vagrant/confs
+      fi;
+      rm -rf /vagrant/confs/* &>/dev/null;
+      cp /var/lib/rancher/k3s/server/node-token /vagrant/confs/master-node-token;
+      cp /etc/rancher/k3s/k3s.yaml /vagrant/confs/k3s.yaml;               
+    SHELL
+  end
+  # ---
+
+  # WORKER NODE
+  config.vm.define WORKER_NODE do |node|
+    node.vm.provider "virtualbox" do |vb|
+      vb.name = WORKER_NODE
+      vb.memory = MEMORY
+      vb.cpus = CPU
+      vb.gui = GUI
+    end
+    node.vm.hostname = WORKER_NODE
+    node.vm.network :private_network, ip: WORKER_IP
+    node.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+    node.vm.provision "shell", privileged: true, inline: <<-SHELL
+      export INSTALL_K3S_EXEC="agent --server=https://192.168.56.110:6443 --token-file=/vagrant/confs/master-node-token";
+      curl -sfL https://get.k3s.io | sh -;
+      mkdir -p /etc/rancher/k3s;
+      cp /vagrant/confs/k3s.yaml /etc/rancher/k3s/k3s.yaml;            
+    SHELL
+  end
+  # ---
+
+end
