@@ -7,6 +7,7 @@ GUI = false
 
 Vagrant.configure("2") do |config|
 	config.vm.box = "hashicorp/bionic64"
+  config.vm.box_url = "file://~/Desktop/hashicorp_bionic64.box"
   config.vm.box_check_update = false
 
   # MASTER NODE
