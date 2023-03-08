@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: iot-app1
-        image: dredfort/iot
+        image: dredfort/iot:v3
         ports:
         - containerPort: 8888
         volumeMounts:
@@ -49,7 +49,7 @@ spec:
     spec:
       containers:
       - name: iot-app2
-        image: dredfort/iot
+        image: dredfort/iot:v3
         ports:
         - containerPort: 8888
         volumeMounts:
@@ -86,7 +86,7 @@ spec:
     spec:
       containers:
       - name: iot-app3
-        image: dredfort/iot
+        image: dredfort/iot:v3
         ports:
         - containerPort: 8888
         volumeMounts:
