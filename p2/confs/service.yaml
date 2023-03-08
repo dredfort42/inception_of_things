@@ -9,7 +9,7 @@ spec:
   ports:
     - port: 80
       protocol: TCP
-      targetPort: 8080
+      targetPort: 8888
 
 ---
 # APP2 SERVICE
@@ -23,7 +23,7 @@ spec:
   ports:
     - port: 80
       protocol: TCP
-      targetPort: 8080
+      targetPort: 8888
 
 ---
 # APP3 SERVICE
@@ -37,4 +37,4 @@ spec:
   ports:
     - port: 80
       protocol: TCP
-      targetPort: 8080
+      targetPort: 8888

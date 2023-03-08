@@ -19,7 +19,7 @@ spec:
       - name: iot-app1
         image: dredfort/iot
         ports:
-        - containerPort: 8080
+        - containerPort: 8888
         volumeMounts:
         - mountPath: /html
           name: data-volume
@@ -51,7 +51,7 @@ spec:
       - name: iot-app2
         image: dredfort/iot
         ports:
-        - containerPort: 8080
+        - containerPort: 8888
         volumeMounts:
         - mountPath: /html
           name: data-volume
@@ -88,7 +88,7 @@ spec:
       - name: iot-app3
         image: dredfort/iot
         ports:
-        - containerPort: 8080
+        - containerPort: 8888
         volumeMounts:
         - mountPath: /html
           name: data-volume

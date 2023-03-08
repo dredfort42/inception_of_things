@@ -33,7 +33,7 @@ Vagrant.configure("2") do |config|
       cp /etc/rancher/k3s/k3s.yaml /vagrant/confs/k3s.yaml;               
     SHELL
   end
-  # ---
+
 
   # WORKER NODE
   config.vm.define WORKER_NODE do |node|
@@ -53,6 +53,6 @@ Vagrant.configure("2") do |config|
       cp /vagrant/confs/k3s.yaml /etc/rancher/k3s/k3s.yaml;            
     SHELL
   end
-  # ---
+
 
 end
