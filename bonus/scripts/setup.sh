@@ -26,5 +26,7 @@ export IP_ENP0S3=$(ifconfig enp0s3 | grep inet |  awk '/inet/ {print $2}' | head
 bash ./install_docker.sh
 bash ./install_kubectl.sh
 bash ./install_k3d.sh
+bash ./install_helm.sh
+bash ./install_gitlab.sh
 bash ./install_argocd.sh
 bash ./launch.sh
